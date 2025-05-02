@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-kafka-metrics-exporter
+  labels:
+    release: {{ .Release.Name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/name: kafka-metrics-exporter
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  endpoints:
+    - port: http
+      interval: 30s
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafka-metrics-exporter
+      app.kubernetes.io/instance: {{ .Release.Name }}

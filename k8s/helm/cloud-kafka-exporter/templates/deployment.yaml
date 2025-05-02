@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-kafka-metrics-exporter
+  labels:
+    app.kubernetes.io/name: kafka-metrics-exporter
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafka-metrics-exporter
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kafka-metrics-exporter
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: kafka-metrics-exporter
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+              name: http
+          env:
+            - name: AMAZME_KAFKA_PASSWORD
+              value: {{ .Values.env.AMAZME_KAFKA_PASSWORD | quote }}
+            - name: AMAZME_KAFKA_INSTANCE_NAME
+              value: {{ .Values.env.AMAZME_KAFKA_INSTANCE_NAME | quote }}
+            - name: LOGGING_LEVEL
+              value: {{ .Values.logs.level | quote }}
+            - name: PROJECT_NAME
+              value: {{ .Values.env.PROJECT_NAME | quote }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

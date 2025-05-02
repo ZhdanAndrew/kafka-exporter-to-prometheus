@@ -1,0 +1,29 @@
+replicaCount: 1
+
+image:
+  repository: your.registry.com/cloud-kafka-exporter
+  tag: 0.0.2
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: cloud-kafka-exporter-pull-secret
+
+logs:
+  level: INFO
+
+env:
+  PROJECT_NAME: ""
+  AMAZME_KAFKA_PASSWORD: ""
+
+service:
+  name: kafka-metrics-exporter
+  port: 8000  # Порт для Prometheus метрик
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 256Mi
+  requests:
+    cpu: 300m
+    memory: 256Mi
+
