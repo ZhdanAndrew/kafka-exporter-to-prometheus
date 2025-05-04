@@ -1,4 +1,5 @@
 # Kafka Exporter для Prometheus (SberCloud)
+![Kafka Exporter Architecture](./images/cloud_eye.png)
 
 ## Описание проекта
 
